@@ -1,0 +1,115 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: basic VPC and subnet conf
+
+Resources: 
+  #VPC
+  myVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      Tags:
+        - Key: Name
+          Value: myVPC
+  
+  #Subnet-パブリック
+  myPublicSubnet1a:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ap-northeast-1a
+      VpcId: !Ref myVPC
+      CidrBlock: 10.0.0.0/24
+      Tags:
+        - Key: Name
+          Value: myPublicSubnet1a
+  myPublicSubnet1c:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ap-northeast-1c
+      VpcId: !Ref myVPC
+      CidrBlock: 10.0.1.0/24
+      Tags:
+        - Key: Name
+          Value: myPublicSubnet1c
+
+  #Subnet-プライベート
+  myPrivateSubnet1a:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ap-northeast-1a
+      VpcId: !Ref myVPC
+      CidrBlock: 10.0.100.0/24
+      Tags:
+        - Key: Name
+          Value: myPrivateSubnet1a
+  myPrivateSubnet1c:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ap-northeast-1c
+      VpcId: !Ref myVPC
+      CidrBlock: 10.0.101.0/24
+      Tags:
+        - Key: Name
+          Value: myPrivateSubnet1c
+
+  #InternetGateWay
+  myIGW:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: myIGW
+
+  #VPCとIGWをアタッチ
+  attachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref myVPC
+      InternetGatewayId: !Ref myIGW
+
+  #ルートテーブル
+  myRouteTablePublic:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref myVPC
+      Tags:
+        - Key: Name
+          Value: myRouteTablePublic
+  myRouteTablePrivate:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref myVPC
+      Tags:
+        - Key: Name
+          Value: myRouteTablePrivate
+
+  #ルートテーブルのルーティング
+  myPublicRT:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref myRouteTablePublic
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref myIGW
+    DependsOn: attachGateway
+
+  #サブネットにルーティングをアタッチ
+  subnetRoutePublicA:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref myRouteTablePublic
+      SubnetId: !Ref myPublicSubnet1a
+  subnetRoutePublicC:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref myRouteTablePublic
+      SubnetId: !Ref myPublicSubnet1c
+  subnetRoutePrivateA:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref myRouteTablePrivate
+      SubnetId: !Ref myPrivateSubnet1a
+  subnetRoutePrivateC:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref myRouteTablePrivate
+      SubnetId: !Ref myPrivateSubnet1c
