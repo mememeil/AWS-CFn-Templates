@@ -1,19 +1,8 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: Simplest template for S3 only
-  
-Parameters:
-  
-Metadata:
-  
-Mappings:
-  
-Conditions:
-  
+
 Resources:
   s3Bucket:
     Type: AWS::S3::Bucket
     Properties: 
       AccessControl: PublicRead
-Transform:
-  
-Outputs:
