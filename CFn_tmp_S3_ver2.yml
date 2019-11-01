@@ -1,0 +1,8 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Simplest template for S3 only
+
+Resources:
+  MySimpleBucket2:
+    Type: AWS::S3::Bucket
+    Properties: 
+      AccessControl: PublicRead
