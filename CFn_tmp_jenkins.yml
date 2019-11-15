@@ -37,6 +37,7 @@ Resources:
   myEC2host:
     Type: 'AWS::EC2::Instance'
     Properties:
+      ImageId: ami-0064e711cbc7a825e
       InstanceType: t2.micro
       Tags:
         - Key: Name
@@ -47,13 +48,14 @@ Resources:
           DeviceIndex: 0
           SubnetId: !Ref mySubnetPublic
           PrivateIpAddresses:
-            - PrivateIpAddress: 10.0.0.178
+            - PrivateIpAddress: 10.0.0.10
               Primary: 'true'
           GroupSet:
             - !Ref sgansiblehost
   myEC2web:
     Type: 'AWS::EC2::Instance'
     Properties:
+      ImageId: ami-0064e711cbc7a825e
       InstanceType: t2.micro
       Tags:
         - Key: Name
@@ -64,7 +66,7 @@ Resources:
           DeviceIndex: 0
           SubnetId: !Ref mySubnetPublic
           PrivateIpAddresses:
-            - PrivateIpAddress: 10.0.0.178
+            - PrivateIpAddress: 10.0.0.20
               Primary: 'true'
           GroupSet:
             - !Ref sgansiblehost
