@@ -72,7 +72,7 @@ Resources:
     Type: 'AWS::EC2::SubnetRouteTableAssociation'
     Properties:
       RouteTableId: !Ref myRouteTable
-      SubnetId: subnet-0128f4568ca58fb8e
+      SubnetId: !Ref mySubnetPublic
   subnetroute2:
     Type: 'AWS::EC2::SubnetRouteTableAssociation'
     Properties:
