@@ -43,7 +43,12 @@ Resources:
           Value: ansible-host
       NetworkInterfaces:
         - DeleteOnTermination: 'true'
+          Description: Primary network interface
+          DeviceIndex: 0
           SubnetId: !Ref mySubnetPublic
+          PrivateIpAddresses:
+            - PrivateIpAddress: 10.0.0.178
+              Primary: 'true'
           GroupSet:
             - !Ref sgansiblehost
   myEC2web:
@@ -55,7 +60,12 @@ Resources:
           Value: ansible-web
       NetworkInterfaces:
         - DeleteOnTermination: 'true'
+          Description: Primary network interface
+          DeviceIndex: 0
           SubnetId: !Ref mySubnetPublic
+          PrivateIpAddresses:
+            - PrivateIpAddress: 10.0.0.178
+              Primary: 'true'
           GroupSet:
             - !Ref sgansiblehost
   sgansiblehost:
