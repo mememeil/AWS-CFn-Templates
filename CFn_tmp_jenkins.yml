@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: 'CFn template for Jenkins CI/CD build'
+Description: 'CFn template for Jenkins CI/CD Build'
 
 Resources:
   myVPC:
