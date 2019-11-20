@@ -43,6 +43,7 @@ Resources:
         - Key: Name
           Value: ansibleWeb
       NetworkInterfaces:
+        - AssociatePublicIpAddress: 'true'
         - DeleteOnTermination: 'true'
           Description: Primary network interface
           DeviceIndex: 0
