@@ -46,7 +46,7 @@ Resources:
         - AssociatePublicIpAddress: 'true'
         - DeleteOnTermination: 'true'
           Description: Primary network interface
-          DeviceIndex: 0
+          DeviceIndex: '0'
           SubnetId: !Ref mySubnetPublic
           PrivateIpAddresses:
             - PrivateIpAddress: 10.0.0.10
