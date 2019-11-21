@@ -1,8 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: 'CFn template for Jenkins CI/CD Test'
-
 Resources:
-  myVPC:
+  vpc0aa3db399c518d60a:
     Type: 'AWS::EC2::VPC'
     Properties:
       CidrBlock: 10.0.0.0/16
@@ -12,71 +10,151 @@ Resources:
       Tags:
         - Key: Name
           Value: vpc-test
-  mySubnetPublic:
+  subnet0d4fd5439e7ca8cba:
     Type: 'AWS::EC2::Subnet'
     Properties:
       CidrBlock: 10.0.0.0/24
       AvailabilityZone: ap-northeast-1a
-      VpcId: !Ref myVPC
+      VpcId: !Ref vpc0aa3db399c518d60a
       Tags:
         - Key: Name
           Value: test-subnet-public-a
-  myIGW:
+  igw0de3a0b983bd19caf:
     Type: 'AWS::EC2::InternetGateway'
     Properties:
       Tags:
         - Key: Name
           Value: test-igw
-  myRouteTable:
+  doptd1f0a9b6:
+    Type: 'AWS::EC2::DHCPOptions'
+    Properties:
+      DomainName: ap-northeast-1.compute.internal
+      DomainNameServers:
+        - AmazonProvidedDNS
+  acl02b9bcc33e121b791:
+    Type: 'AWS::EC2::NetworkAcl'
+    Properties:
+      VpcId: !Ref vpc0aa3db399c518d60a
+  rtb06af415eb389d9d58:
     Type: 'AWS::EC2::RouteTable'
     Properties:
-      VpcId: !Ref myVPC
+      VpcId: !Ref vpc0aa3db399c518d60a
       Tags:
         - Key: Name
           Value: public-rt
-  myEC2web:
+  instancei050aaa5f9fc27f500:
     Type: 'AWS::EC2::Instance'
     Properties:
+      DisableApiTermination: 'false'
+      InstanceInitiatedShutdownBehavior: stop
       ImageId: ami-0064e711cbc7a825e
       InstanceType: t2.micro
+      KeyName: kodhiserver
+      Monitoring: 'false'
+      Tags:
+        - Key: Name
+          Value: ansible-host
+      NetworkInterfaces:
+        - DeleteOnTermination: 'true'
+          Description: Primary network interface
+          DeviceIndex: 0
+          SubnetId: !Ref subnet0d4fd5439e7ca8cba
+          PrivateIpAddresses:
+            - PrivateIpAddress: 10.0.0.178
+              Primary: 'true'
+          GroupSet:
+            - !Ref sgansiblehost
+  instancei0f3793eaffc3817ca:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      DisableApiTermination: 'false'
+      InstanceInitiatedShutdownBehavior: stop
+      ImageId: ami-0064e711cbc7a825e
+      InstanceType: t2.micro
+      KeyName: kodhiserver
+      Monitoring: 'false'
       Tags:
         - Key: Name
           Value: ansibleWeb
       NetworkInterfaces:
         - DeleteOnTermination: 'true'
-        - AssociatePublicIpAddress: 'true'
           Description: Primary network interface
-          DeviceIndex: "0"
-          SubnetId: !Ref mySubnetPublic
+          DeviceIndex: 0
+          SubnetId: !Ref subnet0d4fd5439e7ca8cba
+          PrivateIpAddresses:
+            - PrivateIpAddress: 10.0.0.147
+              Primary: 'true'
           GroupSet:
             - !Ref sgansiblehost
   sgansiblehost:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
       GroupDescription: ansible-host
-      VpcId: !Ref myVPC
+      VpcId: !Ref vpc0aa3db399c518d60a
+  acl1:
+    Type: 'AWS::EC2::NetworkAclEntry'
+    Properties:
+      CidrBlock: 0.0.0.0/0
+      Egress: 'true'
+      Protocol: '-1'
+      RuleAction: allow
+      RuleNumber: '100'
+      NetworkAclId: !Ref acl02b9bcc33e121b791
+  acl2:
+    Type: 'AWS::EC2::NetworkAclEntry'
+    Properties:
+      CidrBlock: 0.0.0.0/0
+      Protocol: '-1'
+      RuleAction: allow
+      RuleNumber: '100'
+      NetworkAclId: !Ref acl02b9bcc33e121b791
+  subnetacl1:
+    Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    Properties:
+      NetworkAclId: !Ref acl02b9bcc33e121b791
+      SubnetId: subnet-0128f4568ca58fb8e
+  subnetacl2:
+    Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    Properties:
+      NetworkAclId: !Ref acl02b9bcc33e121b791
+      SubnetId: !Ref subnet0d4fd5439e7ca8cba
+  subnetacl3:
+    Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    Properties:
+      NetworkAclId: !Ref acl02b9bcc33e121b791
+      SubnetId: subnet-0633696d6a048a097
+  subnetacl4:
+    Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    Properties:
+      NetworkAclId: !Ref acl02b9bcc33e121b791
+      SubnetId: subnet-01d6c2c2b887affc5
   gw1:
     Type: 'AWS::EC2::VPCGatewayAttachment'
     Properties:
-      VpcId: !Ref myVPC
-      InternetGatewayId: !Ref myIGW
+      VpcId: !Ref vpc0aa3db399c518d60a
+      InternetGatewayId: !Ref igw0de3a0b983bd19caf
   subnetroute1:
     Type: 'AWS::EC2::SubnetRouteTableAssociation'
     Properties:
-      RouteTableId: !Ref myRouteTable
-      SubnetId: !Ref mySubnetPublic
+      RouteTableId: !Ref rtb06af415eb389d9d58
+      SubnetId: subnet-0128f4568ca58fb8e
   subnetroute2:
     Type: 'AWS::EC2::SubnetRouteTableAssociation'
     Properties:
-      RouteTableId: !Ref myRouteTable
-      SubnetId: !Ref mySubnetPublic
+      RouteTableId: !Ref rtb06af415eb389d9d58
+      SubnetId: !Ref subnet0d4fd5439e7ca8cba
   route1:
     Type: 'AWS::EC2::Route'
     Properties:
       DestinationCidrBlock: 0.0.0.0/0
-      RouteTableId: !Ref myRouteTable
-      GatewayId: !Ref myIGW
+      RouteTableId: !Ref rtb06af415eb389d9d58
+      GatewayId: !Ref igw0de3a0b983bd19caf
     DependsOn: gw1
+  dchpassoc1:
+    Type: 'AWS::EC2::VPCDHCPOptionsAssociation'
+    Properties:
+      VpcId: !Ref vpc0aa3db399c518d60a
+      DhcpOptionsId: !Ref doptd1f0a9b6
   ingress1:
     Type: 'AWS::EC2::SecurityGroupIngress'
     Properties:
@@ -91,3 +169,4 @@ Resources:
       GroupId: !Ref sgansiblehost
       IpProtocol: '-1'
       CidrIp: 0.0.0.0/0
+Description: ''
