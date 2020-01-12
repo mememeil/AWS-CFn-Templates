@@ -45,3 +45,15 @@ Resources:
       Tags:
         - Key: Name
           Value: value
+
+# -----------------------------------------------#
+#  RouteTable
+# -----------------------------------------------#
+# Public RouteTableA Create
+  PublicRouteTableA:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: value
