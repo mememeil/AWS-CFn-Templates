@@ -31,3 +31,17 @@ Resources:
     Properties:
       InternetGatewayId: !Ref InternetGateway
       VpcId: !Ref VPC
+
+# -----------------------------------------------#
+#  Subnet
+# -----------------------------------------------#
+# Public SubnetA Create
+  PublicSubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: ap-northeast-1a
+      CidrBlock: 10.0.1.0/24
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: value
