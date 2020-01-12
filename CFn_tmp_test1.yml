@@ -68,3 +68,13 @@ Resources:
       RouteTableId: !Ref PublicRouteTableA  
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref InternetGateway
+
+# -----------------------------------------------#
+#  RouteTable Associate
+# -----------------------------------------------#
+# PublicRouteTable Associate SubnetA
+  PublicSubnetARouteTableAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      SubnetId: !Ref PublicSubnetA
+      RouteTableId: !Ref PublicRouteTableA
