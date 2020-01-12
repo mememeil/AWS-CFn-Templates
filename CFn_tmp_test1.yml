@@ -57,3 +57,14 @@ Resources:
       Tags:
         - Key: Name
           Value: value
+  
+# -----------------------------------------------#
+#  Routing
+# -----------------------------------------------#
+# Public RouteA Create
+  PublicRouteA:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PublicRouteTableA  
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
